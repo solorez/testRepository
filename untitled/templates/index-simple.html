@@ -1,0 +1,130 @@
+<html>
+<!--
+百度官方JSON调用例子：
+http://echarts.baidu.com/gallery/editor.html?c=candlestick-brush
+-->
+<head>
+    <script src="http://echarts.baidu.com/dist/echarts.js"></script>
+    <link href="/static/main.css" rel="stylesheet" type="text/css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 1270px;height:700px;"></div>
+<div id="text"></div>
+<script type="text/javascript">
+var myChart = echarts.init(document.getElementById('main'));
+myChart.title = '2015 年上证指数';
+function calculateMA(dayCount, data) {
+    var result = [];
+    for (var i = 0, len = data.length; i < len; i++) {
+        if (i < dayCount) {
+            result.push('-');
+            continue;
+        }
+        var sum = 0;
+        for (var j = 0; j < dayCount; j++) {
+            sum += data[i - j][1];
+        }
+        result.push(sum / dayCount);
+    }
+    return result;
+}
+var dates = {{dates|safe}}
+var data = {{datas|safe}}
+var option = {
+    backgroundColor: '#21202D',
+    legend: {
+        data: ['日K'],//, 'MA5', 'MA10', 'MA20', 'MA30'
+        inactiveColor: '#777',
+        textStyle: {
+            color: '#fff'
+        }
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            animation: false,
+            type: 'cross',
+            lineStyle: {
+                color: '#376df4',
+                width: 2,
+                opacity: 1
+            }
+        }
+    },
+    xAxis: {
+        type: 'category',
+        data: dates,
+        axisLine: { lineStyle: { color: '#8392A5' } }
+    },
+    yAxis: {
+        scale: true,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        splitLine: { show: false }
+    },
+    grid: {
+        bottom: 80
+    },
+    dataZoom: [{
+        textStyle: {
+            color: '#8392A5'
+        },
+        dataBackground: {
+            areaStyle: {
+                color: '#8392A5'
+            },
+            lineStyle: {
+                opacity: 0.8,
+                color: '#8392A5'
+            }
+        },
+        handleStyle: {
+            color: '#fff',
+            shadowBlur: 3,
+            shadowColor: 'rgba(0, 0, 0, 0.6)',
+            shadowOffsetX: 2,
+            shadowOffsetY: 2
+        }
+    }, {
+        type: 'inside'
+    }],
+    animation: false,
+    series: [
+        {
+            type: 'candlestick',
+            name: '日K',
+            data: data,
+            itemStyle: {
+                normal: {
+                    color: '#FD1050',
+                    color0: '#0CF49B',
+                    borderColor: '#FD1050',
+                    borderColor0: '#0CF49B'
+                }
+            },
+            markLine:{
+                silent: true,
+                data: {{fenbi|safe}},<!--[[{xAxis:1,yAxis:"28.62"},{xAxis:6,yAxis:"31.65"}],[{xAxis:6,yAxis:"31.65"},{xAxis:11,yAxis:"27.81"}]],-->            
+                symbol: ['none', 'none'],
+                lineStyle:{
+                    normal:{
+                        width: 1.5,
+                        type: 'dashed'
+                    }
+
+                }
+            }
+        }
+    ]
+};
+
+myChart.setOption(option);
+
+
+</script>
+
+</body>
+
+</html>
